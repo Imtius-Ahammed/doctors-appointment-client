@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthProvider';
 
 const SignUp = () => {
   
   const {register,handleSubmit,formState: { errors }} = useForm();
+  const{createUser}=useContext(AuthContext)
   const handleSignUp = (data)=>{
     console.log(data)
+    createUser(data.email,data.password)
+    .then(result=>{
+      const user = result.user;
+      console.log(user);
+    })
+    .catch(err=>console.error(err));
   }
   return (
     <div className="h-[800px] w-96 flex items-center justify-center container mx-auto">
@@ -46,7 +54,11 @@ const SignUp = () => {
           </label>
           <input
             type="password"
-            {...register("password",{required: "password required",minLength:{value:6,message:"password must be 6 character or longer"}})}
+            {...register("password",{required: "password required",minLength:{value:6,message:"password must be 6 character or longer"},
+            pattern:{value: /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])/, message: 'Password must be Strong'}
+          
+          
+          })}
             className="input input-bordered w-full max-w-xs"
           
           />
@@ -56,7 +68,7 @@ const SignUp = () => {
         </div>
 
         <input
-          className="btn btn-accent w-full"
+          className="btn btn-accent w-full mt-4"
           value="SignUp"
           type="submit"
         />
