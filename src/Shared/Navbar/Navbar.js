@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthProvider";
+
 
 const Navbar = () => {
+  const {user, logOut} = useContext(AuthContext);
+  console.log(user);
+  const handleLogOut = () =>{
+    logOut()
+    .then(()=>{})
+    .catch(err=> console.log(err));
+  }
+  
   const menuItems = (
     <React.Fragment>
       <li>
@@ -14,12 +24,23 @@ const Navbar = () => {
       <li>
         <Link to='/about'>About</Link>
       </li>
+     
       <li>
-        <Link to='/login'>Login</Link>
+        <Link to='/dashboard'>Dashboard</Link>
       </li>
-      <li>
-        <Link to='/signup'>SignUp</Link>
+     
+      {user?.email ? <>
+        <li><button onClick={handleLogOut}>SignOut</button></li> 
+        <li>
+        <Link to='/reviews'>Reviews</Link>
       </li>
+      
+      </>:
+      <li><Link to="/login">Login</Link></li>
+      }
+  
+ 
+     
     </React.Fragment>
   );
   return (
