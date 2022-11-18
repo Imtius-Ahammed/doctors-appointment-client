@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider';
 
 const SignUp = () => {
@@ -9,6 +9,9 @@ const SignUp = () => {
   const {register,handleSubmit,formState: { errors }} = useForm();
   const{createUser,updateUser}=useContext(AuthContext)
   const [signUpError, setSignUpError]=useState('')
+
+  const navigate = useNavigate();
+
   const handleSignUp = (data)=>{
     console.log(data)
     setSignUpError('')
@@ -21,13 +24,32 @@ const SignUp = () => {
         displayName: data.name
       }
       updateUser(userInfo)
-      .then(()=>{})
+      .then(()=>{
+        saveUser(data.name, data.email);
+      })
       .catch(err=>console.log(err));
     })
     .catch(err=>{
       console.error(err)
       setSignUpError(err.message)
     });
+  }
+
+  const saveUser = (name,email)=>{
+    const user = {name, email};
+    fetch('http://localhost:5000/users', {
+      method: 'POST',
+      headers: {
+        'content-type' : 'application/json'
+      },
+      body: JSON.stringify(user)
+    })
+    .then(res=>res.json())
+    .then(data=>{
+      console.log('save user', data);
+      navigate('/');
+    })
+
   }
   return (
     <div className="h-[800px] w-96 flex items-center justify-center container mx-auto">

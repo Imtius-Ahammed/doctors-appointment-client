@@ -1,9 +1,11 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
+import Navbar from '../../../Shared/Navbar/Navbar';
 
 const Dashboard = () => {
   return (
     <div>
-      <h2>Comming Soon</h2>
+     <h1>Comming</h1>
     </div>
   );
 };
