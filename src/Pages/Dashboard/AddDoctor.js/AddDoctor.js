@@ -1,5 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
+import Loading from "../../../Shared/Loading/Loading";
 
 const AddDoctor = () => {
   const {
@@ -7,9 +9,38 @@ const AddDoctor = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const imageHostKey = process.env.REACT_APP_imgbb_key;
+  console.log(imageHostKey)
+
+  const {data: specialties, isLoading} = useQuery({
+    queryKey:['specialty'],
+    queryFn: async() =>{
+    const res = await fetch('http://localhost:5000/appointmentSpecialty');
+    const data = await res.json();
+    return data;
+    }
+  })
   const handleAddDoctor = (data) => {
     console.log(data);
+
+    const image = data.image[0];
+    const formData = new FormData();
+    formData.append('image', image);
+    const url = `https://api.imgbb.com/1/upload?expiration=600&key=${imageHostKey}`
+    fetch(url,{
+      method: 'POST',
+      body: formData
+    })
+    .then(res=>res.json())
+    .then(imgData =>{
+     if(imgData.success){
+      console.log(imgData.data.url);
+     }
+    })
   };
+  if(isLoading){
+    return <Loading></Loading>
+  }
   return (
     <div className="w-96 p-7">
       <h2 cla>Add a Doctor</h2>
@@ -48,15 +79,35 @@ const AddDoctor = () => {
           <label className="label">
             <span className="label-text">Specialty</span>
           </label>
-          <select className="select select-bordered w-full max-w-xs">
+          <select
+          {...register('specialty')}
+           className="select select-bordered w-full max-w-xs">
             <option disabled selected>
-              Pick a Specialty
+              Please select Specialty
             </option>
-            <option>Han Solo</option>
-            <option>Greedo</option>
+            {
+              specialties.map(specialty => <option key={specialty._id} value={specialty.name}>{specialty.name}</option>)
+            }
+            
           </select>
 
         
+        </div>
+
+        <div className="form-control w-full max-w-xs">
+          <label className="label">
+            <span className="label-text">Photo</span>
+          </label>
+          <input
+            type="file"
+            {...register("image", { required: "Photo is required" })}
+            className="input input-bordered w-full max-w-xs"
+          />
+          {errors.image && (
+            <p className="text-red-500" role="alert">
+              {errors.image?.message}
+            </p>
+          )}
         </div>
 
         <input
