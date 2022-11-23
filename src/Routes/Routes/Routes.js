@@ -18,60 +18,76 @@ import PrivateRoutes from "../PrivateRoutes/PrivateRoutes";
 
 export const router = createBrowserRouter([
   {
-    path:'/',
-    element:<Main></Main>,
-    errorElement:<DisplayError></DisplayError>,
+    path: "/",
+    element: <Main></Main>,
+    errorElement: <DisplayError></DisplayError>,
     children: [
       {
-        path:'/',
-        element:<Home></Home>
+        path: "/",
+        element: <Home></Home>,
       },
-      {path:'/login',
-      element:<Login></Login>
-    
-    },
-      {path:'/signup',
-      element:<SignUp></SignUp>
-    
-    },
-   
-    {
-      path:'/reviews',
-      element:<Review></Review>
-    },
-    {
-      path: '/appointment',
-      element:<Appointment></Appointment>
+      { path: "/login", element: <Login></Login> },
+      { path: "/signup", element: <SignUp></SignUp> },
 
-    }
-    ]
+      {
+        path: "/reviews",
+        element: <Review></Review>,
+      },
+      {
+        path: "/appointment",
+        element: <Appointment></Appointment>,
+      },
+    ],
   },
   {
-    path:'/dashboard',
-    element:<PrivateRoutes><DashboardLayout></DashboardLayout></PrivateRoutes>,
-    errorElement:<DisplayError></DisplayError>,
-    children:[
+    path: "/dashboard",
+    element: (
+      <PrivateRoutes>
+        <DashboardLayout></DashboardLayout>
+      </PrivateRoutes>
+    ),
+    errorElement: <DisplayError></DisplayError>,
+    children: [
       {
-        path:'/dashboard',
-        element:<MyAppointment></MyAppointment>
+        path: "/dashboard",
+        element: <MyAppointment></MyAppointment>,
       },
       {
-        path:'/dashboard/allusers',
-        element:<AdminRoute><AllUsers></AllUsers></AdminRoute>
+        path: "/dashboard/allusers",
+        element: (
+          <AdminRoute>
+            <AllUsers></AllUsers>
+          </AdminRoute>
+        ),
       },
       {
-        path:'/dashboard/adddoctor',
-        element:<AdminRoute><AddDoctor></AddDoctor></AdminRoute>
+        path: "/dashboard/adddoctor",
+        element: (
+          <AdminRoute>
+            <AddDoctor></AddDoctor>
+          </AdminRoute>
+        ),
       },
       {
-        path:'/dashboard/managedoctors',
-        element:<AdminRoute><ManageDoctors></ManageDoctors></AdminRoute>
+        path: "/dashboard/managedoctors",
+        element: (
+          <AdminRoute>
+            <ManageDoctors></ManageDoctors>
+          </AdminRoute>
+        ),
       },
       {
-        path:'/dashboard/payment/:id',
-        element:<AdminRoute><Payment></Payment></AdminRoute>,
-        loader: ({params})=>fetch(`http://localhost:5000/bookings/${params.id}`)
+        path: "/dashboard/payment/:id",
+        element: (
+          
+            <Payment></Payment>
+          
+        ),
+        loader: ({ params }) =>
+          fetch(
+            `https://doctors-portal-server-pi-seven.vercel.app/bookings/${params.id}`
+          ),
       },
-    ]
-  }
-])
+    ],
+  },
+]);
